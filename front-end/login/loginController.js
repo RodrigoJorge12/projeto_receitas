@@ -1,24 +1,23 @@
-class LoginController{
-    
-    constructor(login, senha){
-        this.login = login;
-        this.senha = senha;
-    }
+export class LoginController{
 
-    async validarAcesso(){
+    async validarAcesso(login, senha){
         try{
             const response = await fetch("http://localhost:9000/login", {
                 method : "POST",
                 headers : {
                     "content-type" : "application/json"
                 },
-                body : {
-                    "login" : this.login,
-                    "senha" : this.senha
-                }
+                body : JSON.stringify({
+                    "login" : login,
+                    "senha" : senha
+                })
             });
             if(response.ok){
-                return true;
+                const result = await response.json();
+                if(result == true){
+                    return true;
+                }
+                return false
             }
             return false;
         }
@@ -26,4 +25,16 @@ class LoginController{
             return false;
         }
     }
+
+    setCookie(name, value, minutes) {
+        const date = new Date();
+        date.setTime(date.getTime() + (minutes * 60 * 1000)); 
+        document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+    }
+    
+    getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    } 
 }

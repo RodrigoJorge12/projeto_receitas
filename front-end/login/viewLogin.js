@@ -2,11 +2,12 @@ import { LoginController } from "./loginController.js";
 
 
 document.getElementById("btnEnviar").addEventListener("click", async function(){
+    const loginController = new LoginController();
     const login = document.getElementById("login").value;
     const senha = document.getElementById("senha").value;
-    loginController = new LoginController(login, senha);
-    if(await loginController.validarAcesso() == true){
-        sessionStorage.setItem("sessao_valida", true);
+    if(await loginController.validarAcesso(login, senha) == true){
+        loginController.setCookie('sessao_valida', 'true', 2);
+        window.location.href = "./../index.html";
     }
-    alert("Login ou senha incorretos, tente novamente");
 });
+
