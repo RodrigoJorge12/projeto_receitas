@@ -6,6 +6,7 @@ WORKDIR /app
 COPY . .
 RUN dotnet restore
 RUN dotnet publish -c Release -o /out
+RUN dotnet add package MySql.Data
 
 # Use uma imagem mais leve do .NET para rodar o projeto
 FROM mcr.microsoft.com/dotnet/aspnet:8.0

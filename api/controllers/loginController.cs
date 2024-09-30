@@ -1,19 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using models;
+using repositories;
     namespace controllers{
-        public class LoginController : ControllerBase
+        public class LoginController
         {
+            private RepositorioUsuario repositorio;
+
+            public LoginController(RepositorioUsuario repositorio){
+                this.repositorio = repositorio;
+            }
+
             public Boolean Login(User user)
             {
-                // Validação simples das credenciais (apenas exemplo, você pode usar um banco de dados)
-                if (user.getLogin() == "usuario@teste.com" && user.getSenha() == "123456")
-                {
-                    // se o login der certo
-                    return true;
-                }
-
-                // Se o login falhar
-                return false;
+                return this.repositorio.validarLogin(user);
             }
         }
     }

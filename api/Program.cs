@@ -1,28 +1,31 @@
 using models;
 using controllers;
+using conexao;
+using repositories;
 using System.Text.Json.Nodes;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Configurar o CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost") // TODO: Alterar para o URL do frontend
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
                           .AllowAnyHeader()
                           .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 app.UseRouting();
-app.UseCors("AllowSpecificOrigin");
 
 app.MapPost("/login", static async (HttpContext context) => {
     var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
-    LoginController loginController = new LoginController();
+    Conexao conexao = new Conexao();
+    RepositorioUsuario repo = new RepositorioUsuarioEmBdr(conexao);
+    LoginController loginController = new LoginController(repo);
     if (string.IsNullOrWhiteSpace(body)){
         return false;
     }
