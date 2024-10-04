@@ -10,13 +10,20 @@ namespace repositories{
         }
 
         public Boolean validarLogin(User user){
-            string query = "SELECT * FROM `usuarios` WHERE `login` = @login AND `senha` = @senha";
-            using (MySqlCommand cmd = new MySqlCommand(query, this.conexao.getConnection())){
-                cmd.Parameters.AddWithValue("@login", user.getLogin());
-                cmd.Parameters.AddWithValue("@senha", user.getSenha());
-                using(MySqlDataReader reader = cmd.ExecuteReader()){
-                    if(reader.Read()){
-                        return true;
+            using (MySqlConnection conn = conexao.getConnection())
+                {
+                    if (conn.State == System.Data.ConnectionState.Closed)
+                    {
+                        conn.Open();
+                    }
+                string query = "SELECT * FROM `usuarios` WHERE `login` = @login AND `senha` = @senha";
+                using (MySqlCommand cmd = new MySqlCommand(query, conn)){
+                    cmd.Parameters.AddWithValue("@login", user.getLogin());
+                    cmd.Parameters.AddWithValue("@senha", user.getSenha());
+                    using(MySqlDataReader reader = cmd.ExecuteReader()){
+                        if(reader.Read()){
+                            return true;
+                        }
                     }
                 }
             }

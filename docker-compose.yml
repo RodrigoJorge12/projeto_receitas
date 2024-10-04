@@ -7,6 +7,7 @@ services:
       - "9000:9000"
     depends_on:
       - frontend
+      - mysql
     networks:
       - app-network
 
@@ -19,6 +20,22 @@ services:
     networks:
       - app-network
 
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sistema_receitas
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+      
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db_data:
